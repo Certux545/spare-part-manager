@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
+import json
+import os
 
 def open_lager():
     show_inventory_window()
@@ -91,27 +93,35 @@ def show_inventory():
         print()  # Leerzeile für bessere Lesbarkeit
 
 def exit_app():
+    # Speichern der Lagerdaten in die JSON-Datei
+    save_inventory_to_json()
     root.destroy()
 
-# Beispiel Lager
-lager = {
-    "Maschinentyp1": {
-        "Ersatzteil1": 10,
-        "Ersatzteil2": 20,
-    },
-    "Maschinentyp2": {
-        "Ersatzteil3": 15,
-        "Ersatzteil4": 25,
-    }
-}
+# Laden der Lagerdaten aus der JSON-Datei
+def load_inventory_from_json():
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "inventory.json"), "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        # Wenn die Datei nicht gefunden wird, gib ein leeres Lager zurück
+        print("Lager nicht gefunden")
+        return {}
 
-# Hauptfenster erstellen
+# Speichern der Lagerdaten in die JSON-Datei
+def save_inventory_to_json():
+    with open(os.path.join(os.path.dirname(__file__), "inventory.json"), "w") as file:
+        json.dump(lager, file)
+
+# Beispiel Lager
+lager = load_inventory_from_json()
+
+# Hauptfenster erstellen und andere Funktionen definieren...
 root = tk.Tk()
 root.title("Hauptmenü")
 root.geometry("400x267")  # Setze die Größe des Hauptfensters
 
-# Hintergrundbild laden
-background_image = Image.open("C:\\Users\\Felix Stangl\\Desktop\\Programiren\\spare-part-manager\\background_image.jpg")
+# Lade das Hintergrundbild
+background_image = Image.open(os.path.join(os.path.dirname(__file__), "images", "background_image.jpg"))
 background_photo = ImageTk.PhotoImage(background_image)
 
 # Hintergrundbild als Label im Hauptfenster platzieren
